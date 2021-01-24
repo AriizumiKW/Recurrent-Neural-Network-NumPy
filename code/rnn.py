@@ -95,7 +95,7 @@ class RNN(object):
                 s[len(x)] = np.zeros(self.hidden_dims)
                 mid_temp = np.add(np.matmul(x_onehot, self.V.T), np.matmul(s[len(x)].T, self.U.T))
             else:
-                mid_temp = np.add(np.matmul(x_onehot, self.V.T), np.matmul(s[t-1].T, self.U.T))
+                mid_temp = np.add(np.matmul(x_onehot, self.V.T), np.matmul(s[t - 1].T, self.U.T))
             s_temp = sigmoid(mid_temp)
             y_temp = softmax(np.matmul(s_temp, self.W.T))
             s[t] = s_temp
@@ -207,11 +207,12 @@ class RNN(object):
         return loss		the combined loss for all words
         '''
 
-        loss = 0.
-
-        ##########################
-        # --- your code here --- #
-        ##########################
+        y, _ = self.predict(x)
+        y = np.log(y)
+        d_mat = np.zeros_like(y)
+        for row, label in enumerate(d):
+            d_mat[row][label] = 1
+        loss = -np.sum(y * d_mat)
 
         return loss
 
@@ -292,10 +293,12 @@ class RNN(object):
         '''
 
         mean_loss = 0.
-
-        ##########################
-        # --- your code here --- #
-        ##########################
+        number_of_words = 0
+        for x, d in zip(X, D):
+            mean_loss += self.compute_loss(x, d)
+            number_of_words += len(x)
+        if number_of_words != 0:
+            mean_loss /= number_of_words
 
         return mean_loss
 

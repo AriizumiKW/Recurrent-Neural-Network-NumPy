@@ -123,3 +123,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# self-defined gitignore
+data
+__MACOSX
+code/.idea

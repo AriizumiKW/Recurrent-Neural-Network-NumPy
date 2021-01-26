@@ -87,9 +87,6 @@ class RNN(object):
         y = np.zeros((len(x), self.out_vocab_size))
 
         for t in range(len(x)):
-            ##########################
-            # --- your code here --- #
-            ##########################
             x_onehot = make_onehot(x[t], self.vocab_size)
             if t == 0:
                 s[len(x)] = np.zeros(self.hidden_dims)
@@ -120,11 +117,18 @@ class RNN(object):
         no return values
         '''
 
+        d_onehot = np.zeros_like(y)
+        x_onehot = np.zeros_like(y)
+        for i, index in enumerate(d):
+            d_onehot[i][index] = 1
+        for i, index in enumerate(x):
+            x_onehot[i][index] = 1
+        delta_out = d_onehot - y
+        delta_in = np.matmul(delta_out, self.W) * (s * (1 - s))[:-1, :]
         for t in reversed(range(len(x))):
-            ##########################
-            # --- your code here --- #
-            ##########################
-            pass
+            self.deltaW += np.outer(delta_out[t], s[t])
+            self.deltaV += np.outer(delta_in[t], x_onehot[t])
+            self.deltaU += np.outer(delta_in[t], s[t - 1])
 
     def acc_deltas_np(self, x, d, y, s):
         '''
@@ -165,12 +169,26 @@ class RNN(object):
 
         no return values
         '''
+        d_onehot = np.zeros_like(y)
+        x_onehot = np.zeros_like(y)
+        for i, index in enumerate(d):
+            d_onehot[i][index] = 1
+        for i, index in enumerate(x):
+            x_onehot[i][index] = 1
+
+        delta_out = d_onehot - y
         for t in reversed(range(len(x))):
-            # print("time {0}".format(t))
-            ##########################
-            # --- your code here --- #
-            ##########################
-            pass
+            self.deltaW += np.outer(delta_out[t], s[t])
+
+        delta_in = np.matmul(delta_out, self.W) * (s * (1 - s))[:-1, :]
+        net_in_dr = (s * (1 - s))[:-1, :]
+        for step in range(steps + 1):
+            for t in reversed(range(len(x))):
+                if t - step >= 0:
+                    self.deltaV += np.outer(delta_in[t], x_onehot[t - step])
+                    self.deltaU += np.outer(delta_in[t], s[t - 1 - step])
+            net_in_dr = np.vstack((np.zeros(shape=self.hidden_dims), net_in_dr[:-1, :]))
+            delta_in = np.matmul(delta_in, self.U) * net_in_dr
 
     def acc_deltas_bptt_np(self, x, d, y, s, steps):
         '''

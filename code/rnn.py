@@ -657,9 +657,9 @@ if __name__ == "__main__":
         # this is the best expected loss out of that set
         q = vocab.freq[vocab_size] / sum(vocab.freq[vocab_size:])
 
-        ##########################
-        # --- your code here --- #
-        ##########################
+        rnn = RNN(vocab_size, hdim, vocab_size)
+        rnn.train(X_train, D_train, X_dev, D_dev, epochs=10, learning_rate=lr, anneal=5, back_steps=lookback,
+                  batch_size=100, min_change=0.0001, log=True)
 
         run_loss = -1
         adjusted_loss = -1

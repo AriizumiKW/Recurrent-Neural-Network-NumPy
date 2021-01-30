@@ -128,3 +128,6 @@ dmypy.json
 data
 __MACOSX
 code/.idea
+code/rnn.U.npy
+code/rnn.V.npy
+code/rnn.W.npy

@@ -147,10 +147,9 @@ class RNN(object):
 
         no return values
         '''
-
-    ##########################
-    # --- your code here --- #
-    ##########################
+        ##########################
+        # --- your code here --- #
+        ##########################
 
     def acc_deltas_bptt(self, x, d, y, s, steps):
         '''
@@ -169,6 +168,7 @@ class RNN(object):
 
         no return values
         '''
+        
         d_onehot = np.zeros_like(y)
         x_onehot = np.zeros_like(y)
         for i, index in enumerate(d):
@@ -246,11 +246,11 @@ class RNN(object):
         return loss		we only take the prediction from the last time step
         '''
 
-        loss = 0.
-
-        ##########################
-        # --- your code here --- #
-        ##########################
+        y, _ = self.predict(x)
+        y = np.log(y[-1])
+        d_mat = np.zeros_like(y)
+        d_mat[d[0]] = 1
+        loss = -np.sum(d_mat * y)
 
         return loss
 
@@ -666,6 +666,10 @@ if __name__ == "__main__":
 
         print("Unadjusted: %.03f" % np.exp(run_loss))
         print("Adjusted for missing vocab: %.03f" % np.exp(adjusted_loss))
+
+        np.save('rnn.U', rnn.U)
+        np.save('rnn.V', rnn.V)
+        np.save('rnn.W', rnn.W)
 
     if mode == "train-np":
         '''

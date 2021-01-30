@@ -149,7 +149,7 @@ class RNN(object):
         '''
 
         d_onehot = np.zeros(y[0].shape)
-        x_onehot = np.zeros_like(y)
+        x_onehot = np.zeros_like(y, shape=(len(x), self.vocab_size))
         d_onehot[d[0]] = 1
         for i, index in enumerate(x):
             x_onehot[i][index] = 1
@@ -177,9 +177,9 @@ class RNN(object):
 
         no return values
         '''
-        
+
         d_onehot = np.zeros_like(y)
-        x_onehot = np.zeros_like(y)
+        x_onehot = np.zeros_like(y, shape=(len(x), self.vocab_size))
         for i, index in enumerate(d):
             d_onehot[i][index] = 1
         for i, index in enumerate(x):
@@ -289,13 +289,12 @@ class RNN(object):
         return 1 if argmax(y[t]) == d[0], 0 otherwise
         '''
 
-        y, t = self.predict(x)
+        y, _ = self.predict(x)
         if np.argmax(y[-1]) == d[0]:
             res = 1
         else:
             res = 0
         return res
-
 
     def compare_num_pred(self, x, d):
         '''
@@ -737,11 +736,14 @@ if __name__ == "__main__":
         X_dev = X_dev[:dev_size]
         D_dev = D_dev[:dev_size]
 
-        ##########################
-        # --- your code here --- #
-        ##########################
+        rnn = RNN(vocab_size, hdim, 2)
+        rnn.train_np(X_train, D_train, X_dev, D_dev, epochs=10, learning_rate=lr, anneal=5, back_steps=lookback,
+                  batch_size=100, min_change=0.0001, log=True)
 
         acc = 0.
+        for (X, D) in zip(X_dev, D_dev):
+            acc += rnn.compute_acc_np(X, D)
+        acc /= len(X_dev)
 
         print("Accuracy: %.03f" % acc)
 

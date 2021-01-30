@@ -147,9 +147,18 @@ class RNN(object):
 
         no return values
         '''
-        ##########################
-        # --- your code here --- #
-        ##########################
+
+        d_onehot = np.zeros(y[0].shape)
+        x_onehot = np.zeros_like(y)
+        d_onehot[d[0]] = 1
+        for i, index in enumerate(x):
+            x_onehot[i][index] = 1
+        delta_out = d_onehot - y
+        delta_in = np.matmul(delta_out, self.W) * (s * (1 - s))[:-1, :]
+        t = len(x) - 1
+        self.deltaW += np.outer(delta_out[t], s[t])
+        self.deltaV += np.outer(delta_in[t], x_onehot[t])
+        self.deltaU += np.outer(delta_in[t], s[t - 1])
 
     def acc_deltas_bptt(self, x, d, y, s, steps):
         '''
@@ -209,9 +218,24 @@ class RNN(object):
         no return values
         '''
 
-    ##########################
-    # --- your code here --- #
-    ##########################
+        d_onehot = np.zeros(y[0].shape)
+        x_onehot = np.zeros_like(y)
+        d_onehot[d[0]] = 1
+        for i, index in enumerate(x):
+            x_onehot[i][index] = 1
+
+        delta_out = d_onehot - y
+        t = len(x) - 1
+        self.deltaW += np.outer(delta_out[t], s[t])
+
+        delta_in = np.matmul(delta_out, self.W) * (s * (1 - s))[:-1, :]
+        net_in_dr = (s * (1 - s))[:-1, :]
+        for step in range(steps + 1):
+            if t - step >= 0:
+                self.deltaV += np.outer(delta_in[t], x_onehot[t - step])
+                self.deltaU += np.outer(delta_in[t], s[t - 1 - step])
+            net_in_dr = np.vstack((np.zeros(shape=self.hidden_dims), net_in_dr[:-1, :]))
+            delta_in = np.matmul(delta_in, self.U) * net_in_dr
 
     def compute_loss(self, x, d):
         '''

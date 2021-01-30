@@ -692,6 +692,12 @@ if __name__ == "__main__":
         print("Unadjusted: %.03f" % np.exp(run_loss))
         print("Adjusted for missing vocab: %.03f" % np.exp(adjusted_loss))
 
+        run_loss = rnn.compute_mean_loss(X_train, D_train)
+        adjusted_loss = adjust_loss(run_loss, fraction_lost, q)
+
+        print("Unadjusted on train set: %.03f" % np.exp(run_loss))
+        print("Adjusted for missing vocab on train set: %.03f" % np.exp(adjusted_loss))
+
         np.save('rnn.U', rnn.U)
         np.save('rnn.V', rnn.V)
         np.save('rnn.W', rnn.W)
@@ -737,7 +743,7 @@ if __name__ == "__main__":
         D_dev = D_dev[:dev_size]
 
         rnn = RNN(vocab_size, hdim, 2)
-        rnn.train_np(X_train, D_train, X_dev, D_dev, epochs=10, learning_rate=lr, anneal=5, back_steps=lookback,
+        rnn.train_np(X_train, D_train, X_dev, D_dev, epochs=50, learning_rate=lr, anneal=5, back_steps=lookback,
                   batch_size=100, min_change=0.0001, log=True)
 
         acc = 0.
@@ -746,6 +752,12 @@ if __name__ == "__main__":
         acc /= len(X_dev)
 
         print("Accuracy: %.03f" % acc)
+
+        acc = 0.
+        for (X, D) in zip(X_train, D_train):
+            acc += rnn.compute_acc_np(X, D)
+        acc /= len(X_train)
+        print("Accuracy on train set: %.03f" % acc)
 
     if mode == "predict-lm":
         data_folder = sys.argv[2]

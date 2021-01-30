@@ -289,11 +289,13 @@ class RNN(object):
         return 1 if argmax(y[t]) == d[0], 0 otherwise
         '''
 
-        ##########################
-        # --- your code here --- #
-        ##########################
+        y, t = self.predict(x)
+        if np.argmax(y[-1]) == d[0]:
+            res = 1
+        else:
+            res = 0
+        return res
 
-        return 0
 
     def compare_num_pred(self, x, d):
         '''

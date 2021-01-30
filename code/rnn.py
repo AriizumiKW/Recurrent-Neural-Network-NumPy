@@ -179,7 +179,7 @@ class RNN(object):
         '''
 
         d_onehot = np.zeros_like(y)
-        x_onehot = np.zeros_like(y, shape=(len(x), self.vocab_size))
+        x_onehot = np.zeros_like(y)
         for i, index in enumerate(d):
             d_onehot[i][index] = 1
         for i, index in enumerate(x):
@@ -219,7 +219,7 @@ class RNN(object):
         '''
 
         d_onehot = np.zeros(y[0].shape)
-        x_onehot = np.zeros_like(y)
+        x_onehot = np.zeros_like(y, shape=(len(x), self.vocab_size))
         d_onehot[d[0]] = 1
         for i, index in enumerate(x):
             x_onehot[i][index] = 1

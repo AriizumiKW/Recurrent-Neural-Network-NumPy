@@ -306,12 +306,14 @@ class RNN(object):
 
         return 1 if p(d[0]) > p(d[1]), 0 otherwise
         '''
+        y, _ = self.predict(x)
+        y = y[-1]
+        if y[d[0]] > y[d[1]]:
+            res = 1
+        else:
+            res = 0
+        return res
 
-        ##########################
-        # --- your code here --- #
-        ##########################
-
-        return 0
 
     def compute_acc_lmnp(self, X_dev, D_dev):
         '''

@@ -826,7 +826,7 @@ if __name__ == "__main__":
                 r_list.append(math.floor(ran_num))
         elif distribution == 'normal':
             for i in range(train_size + dev_size * 2):
-                ran_num = np.random.normal(random_num_range / 2, random_num_range / 4)
+                ran_num = np.random.normal(random_num_range / 2, random_num_range / 8)
                 if 0 <= ran_num < random_num_range:
                     r_list.append(math.floor(ran_num))
         if shuffle:
@@ -841,13 +841,13 @@ if __name__ == "__main__":
             D_train.append(np.array(train_seq[i + 1: i + 21]))
 
         X_dev, D_dev = [], []
-        for i in range(train_size - 20):
+        for i in range(dev_size - 20):
             X_dev.append(np.array(dev_seq[i: i + 20]))
             D_dev.append(np.array(dev_seq[i + 1: i + 21]))
 
         # fit into RNN
         rnn = RNN(random_num_range, hdim, random_num_range)
-        rnn.train(X_train, D_train, X_dev, D_dev, epochs=10, learning_rate=lr, anneal=5, back_steps=lookback,
+        rnn.train(X_train, D_train, X_dev, D_dev, epochs=20, learning_rate=lr, anneal=5, back_steps=lookback,
                   batch_size=100, min_change=0.0001, log=True)
 
         # calculate the accuracy and perplexity

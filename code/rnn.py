@@ -841,9 +841,9 @@ if __name__ == "__main__":
             D_train.append(np.array(train_seq[i + 1: i + 21]))
 
         X_dev, D_dev = [], []
-        for i in range(dev_size - 20):
-            X_dev.append(np.array(dev_seq[i: i + 20]))
-            D_dev.append(np.array(dev_seq[i + 1: i + 21]))
+        for i in range(math.floor(dev_size / 20) - 1):
+            X_dev.append(np.array(dev_seq[i * 20: i * 20 + 20]))
+            D_dev.append(np.array(dev_seq[i * 20 + 1: i * 20 + 21]))
 
         # fit into RNN
         rnn = RNN(random_num_range, hdim, random_num_range)

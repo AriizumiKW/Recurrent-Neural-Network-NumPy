@@ -1,0 +1,10 @@
+epoch 1, learning rate 0.0500   instance 1000   epoch done in 135.10 seconds    new loss: 5.933956963843397
+epoch 2, learning rate 0.0417   instance 1000   epoch done in 134.38 seconds    new loss: 5.652373709616448
+epoch 3, learning rate 0.0357   instance 1000   epoch done in 119.75 seconds    new loss: 5.541501718293753
+epoch 4, learning rate 0.0312   instance 1000   epoch done in 110.01 seconds    new loss: 5.475470615729403
+epoch 5, learning rate 0.0278   instance 1000   epoch done in 120.88 seconds    new loss: 5.430612077533459
+epoch 6, learning rate 0.0250   instance 1000   epoch done in 120.29 seconds    new loss: 5.398145464058032
+epoch 7, learning rate 0.0227   instance 1000   epoch done in 116.21 seconds    new loss: 5.37103186705675
+epoch 8, learning rate 0.0208   instance 1000   epoch done in 119.16 seconds    new loss: 5.349432037344389
+epoch 9, learning rate 0.0192   instance 1000   epoch done in 114.87 seconds    new loss: 5.330769296978207
+epoch 10, learning rate 0.0179  instance 1000   epoch done in 144.16 seconds    new loss: 5.314183768404833

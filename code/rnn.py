@@ -1,6 +1,7 @@
 # coding: utf-8
 import sys
 import time
+import math
 import numpy as np
 
 from utils import *
@@ -313,7 +314,6 @@ class RNN(object):
         else:
             res = 0
         return res
-
 
     def compute_acc_lmnp(self, X_dev, D_dev):
         '''
@@ -709,8 +709,8 @@ if __name__ == "__main__":
         starter code for parameter estimation.
         change this to different values, or use it to get you started with your own testing class
         '''
-        train_size = 1000
-        dev_size = 1000
+        train_size = 47500
+        dev_size = 2500
         vocab_size = 2000
 
         hdim = int(sys.argv[3])
@@ -746,7 +746,7 @@ if __name__ == "__main__":
 
         rnn = RNN(vocab_size, hdim, 2)
         rnn.train_np(X_train, D_train, X_dev, D_dev, epochs=50, learning_rate=lr, anneal=5, back_steps=lookback,
-                  batch_size=100, min_change=0.0001, log=True)
+                     batch_size=100, min_change=0.0001, log=True)
 
         acc = 0.
         for (X, D) in zip(X_dev, D_dev):
@@ -804,3 +804,66 @@ if __name__ == "__main__":
         np_acc_test = r.compute_acc_lmnp(X_np_test, D_np_test)
 
         print('Number prediction accuracy on test set:', np_acc_test)
+
+    if mode == 'predict-random-number':
+
+        np.random.seed(2021)
+        train_size = 2000 + 20
+        dev_size = 500 + 20
+        random_num_range = 1000
+
+        distribution = sys.argv[2]
+        shuffle = bool(sys.argv[3])
+        hdim = int(sys.argv[4])
+        lookback = int(sys.argv[5])
+        lr = float(sys.argv[6])
+
+        # generate random numbers: uniform distribution or normal distribution
+        r_list = []
+        if distribution == 'uniform':
+            for i in range(train_size + dev_size):
+                ran_num = np.random.uniform(0, random_num_range)
+                r_list.append(math.floor(ran_num))
+        elif distribution == 'normal':
+            for i in range(train_size + dev_size * 2):
+                ran_num = np.random.normal(random_num_range / 2, random_num_range / 4)
+                if 0 <= ran_num < random_num_range:
+                    r_list.append(math.floor(ran_num))
+        if shuffle:
+            np.random.shuffle(r_list)
+
+        train_seq = r_list[:train_size]
+        dev_seq = r_list[train_size:train_size + dev_size]
+
+        X_train, D_train = [], []
+        for i in range(train_size - 20):
+            X_train.append(np.array(train_seq[i: i + 20]))
+            D_train.append(np.array(train_seq[i + 1: i + 21]))
+
+        X_dev, D_dev = [], []
+        for i in range(train_size - 20):
+            X_dev.append(np.array(dev_seq[i: i + 20]))
+            D_dev.append(np.array(dev_seq[i + 1: i + 21]))
+
+        # fit into RNN
+        rnn = RNN(random_num_range, hdim, random_num_range)
+        rnn.train(X_train, D_train, X_dev, D_dev, epochs=2, learning_rate=lr, anneal=5, back_steps=lookback,
+                  batch_size=100, min_change=0.0001, log=True)
+
+        # calculate the accuracy and perplexity
+        acc = 0.
+        count = 0
+        for X, D in zip(X_dev, D_dev):
+            if X.shape[0] != D.shape[0]:
+                X = X[:D.shape[0]]
+            Y, _ = rnn.predict(X)
+            Y = np.argmax(Y, axis=-1)
+            L = np.array(Y == D).astype(int)
+            acc += np.sum(L)
+            count += L.shape[0]
+
+        acc /= count
+        loss = rnn.compute_mean_loss(X_dev, D_dev)
+
+        print('Perplexity: %.03f' % np.exp(loss))
+        print('Accuracy on dev set: %.03f' % acc)

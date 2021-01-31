@@ -10,10 +10,9 @@ def q2_loss():
     for line in data:
         y.append(round(float(re.split(' ', line)[-1][:-1]), 2))
         x.append(re.split(' ', line)[1][:-1])
-    print(x, y)
     plt.plot(x, y, label='q2_loss')
     plt.legend()
-    plt.savefig('./q2')
+    plt.savefig('./q2_loss.pdf')
 
 
 def q3_loss():
@@ -21,26 +20,27 @@ def q3_loss():
     x = []
     y = []
     for line in data:
-        # print(re.split('  ', line))
         y.append(round(float(re.split('  ', line)[5][10:]), 2))
         x.append(re.split(' ', line)[1][:-1])
     plt.plot(x, y, label='q3_loss')
     plt.xticks(range(0, 51, 5))
     plt.legend()
-    plt.savefig('./q3')
+    plt.savefig('./q3_loss.pdf')
+
 
 def q3_acc():
     data = open('data_q3.txt')
     x = []
     y = []
     for line in data:
-        # print(re.split(' ', line))
-        y.append(round(float(re.split(' ', line)[-1][:-1]),2))
+        y.append(round(float(re.split(' ', line)[-1][:-1]), 2))
         x.append(re.split(' ', line)[1][:-1])
-    plt.plot(x,y,label = 'q3_loss')
-    plt.xticks(range(0,51,5))
+    plt.plot(x, y, label='q3_loss')
+    plt.xticks(range(0, 51, 5))
     plt.legend()
-    plt.savefig('./q3_acc')
+    plt.savefig('./q3_acc.pdf')
 
 
+q2_loss()
+q3_acc()
 q3_loss()

@@ -10,7 +10,7 @@ def q2_loss():
     for line in data:
         y.append(round(float(re.split(' ', line)[-1][:-1]), 2))
         x.append(re.split(' ', line)[1][:-1])
-    plt.plot(x, y, label='q2_loss')
+    plt.plot(list(range(0, len(y))), y, label='q2_loss')
     plt.legend()
     plt.savefig('./q2_loss.pdf')
 
@@ -42,5 +42,3 @@ def q3_acc():
 
 
 q2_loss()
-q3_acc()
-q3_loss()

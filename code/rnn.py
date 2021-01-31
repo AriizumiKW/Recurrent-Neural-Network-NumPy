@@ -863,7 +863,9 @@ if __name__ == "__main__":
             count += L.shape[0]
 
         acc /= count
-        loss = rnn.compute_mean_loss(X_dev, D_dev)
+        loss_v = rnn.compute_mean_loss(X_dev, D_dev)
+        loss_t = rnn.compute_mean_loss(X_train, D_train)
 
-        print('Perplexity: %.03f' % np.exp(loss))
+        print('Perplexity on train set: %.03f' % np.exp(loss_t))
+        print('Perplexity on validation set: %.03f' % np.exp(loss_v))
         print('Accuracy on dev set: %.03f' % acc)

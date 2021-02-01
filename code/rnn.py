@@ -808,7 +808,7 @@ if __name__ == "__main__":
     if mode == 'predict-random-number':
 
         np.random.seed(2021)
-        train_size = 2000 + 20
+        train_size = 20000 + 20
         dev_size = 500 + 20
         random_num_range = 1000
 
@@ -830,6 +830,7 @@ if __name__ == "__main__":
                 if 0 <= ran_num < random_num_range:
                     r_list.append(math.floor(ran_num))
         if shuffle:
+            np.random.shuffle(r_list)
             np.random.shuffle(r_list)
 
         train_seq = r_list[:train_size]

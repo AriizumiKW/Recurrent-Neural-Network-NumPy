@@ -851,7 +851,7 @@ if __name__ == "__main__":
 
         # fit into RNN
         rnn = RNN(random_num_range, hdim, random_num_range)
-        rnn.train(X_train, D_train, X_dev, D_dev, epochs=20, learning_rate=lr, anneal=5, back_steps=lookback,
+        rnn.train(X_train, D_train, X_dev, D_dev, epochs=10, learning_rate=lr, anneal=5, back_steps=lookback,
                   batch_size=100, min_change=0.0001, log=True)
 
         # calculate the accuracy and perplexity

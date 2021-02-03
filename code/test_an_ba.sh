@@ -1,13 +1,12 @@
 an=5
 step=3
 
-for((ba=25;ba<=75;ba=ba+25))
+for((ba=5;ba<=10;ba=ba+1))
 do
-	for((an=4;an<=10;an=an+1))
+	for((an=7;an<=10;an=an+1))
 	do
 		echo "---------"
-		val=`expr $ba + $an`
-		python rnn.py train-lm ../data/ 50 0 0.5 $an $ba --> "$val:.txt"
+		python rnn.py train-lm ../data/ 50 0 0.5 $an $ba --> "$ba:$an:.txt"
 		echo $ba
 		echo $an
 		echo "---------"

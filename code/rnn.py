@@ -647,7 +647,7 @@ if __name__ == "__main__":
         code for training language model.
         change this to different values, or use it to get you started with your own testing class
         '''
-        train_size = 1000
+        train_size = 25000
         dev_size = 1000
         vocab_size = 2000
 
@@ -685,8 +685,8 @@ if __name__ == "__main__":
         q = vocab.freq[vocab_size] / sum(vocab.freq[vocab_size:])
 
         rnn = RNN(vocab_size, hdim, vocab_size)
-        rnn.train(X_train, D_train, X_dev, D_dev, epochs=10, learning_rate=lr, anneal=5, back_steps=lookback,
-                  batch_size=100, min_change=0.0001, log=True)
+        rnn.train(X_train, D_train, X_dev, D_dev, epochs=10, learning_rate=lr, anneal=9, back_steps=lookback,
+                  batch_size=32, min_change=0.0001, log=True)
 
         run_loss = rnn.compute_mean_loss(X_dev, D_dev)
         adjusted_loss = adjust_loss(run_loss, fraction_lost, q)
@@ -813,7 +813,7 @@ if __name__ == "__main__":
         random_num_range = 1000
 
         distribution = sys.argv[2]
-        shuffle = bool(sys.argv[3])
+        shuffle = sys.argv[3]
         hdim = int(sys.argv[4])
         lookback = int(sys.argv[5])
         lr = float(sys.argv[6])
@@ -829,9 +829,12 @@ if __name__ == "__main__":
                 ran_num = np.random.normal(random_num_range / 2, random_num_range / 8)
                 if 0 <= ran_num < random_num_range:
                     r_list.append(math.floor(ran_num))
-        if shuffle:
+        if shuffle == 'True':
             np.random.shuffle(r_list)
             np.random.shuffle(r_list)
+            print('Enable shuffle')
+        else:
+            print('Disable shuffle')
 
         train_seq = r_list[:train_size]
         dev_seq = r_list[train_size:train_size + dev_size]
